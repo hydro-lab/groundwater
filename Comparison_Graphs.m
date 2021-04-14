@@ -62,9 +62,17 @@ for i = 1:n
     end
 end
 
-RA_c_linear = RA_c(:);
-P_c_linear = P_c(:);
-SM_c_linear = SM_c(:);
+% there appears to be a problem here:
+% RA_c_linear = RA_c(:);
+% P_c_linear = P_c(:);
+% SM_c_linear = SM_c(:);
+% instead, try:
+for i = 1:n % by year
+    for j = 1:12 % by month
+        RA_c_linear((i-1)*12+j) = RA_c(i,j);
+    end
+end
+
 
 % GRACE Mascon Solutions
 
@@ -85,13 +93,19 @@ months = (1:1:132);
 month = (1:1:120);
 figure;
 subplot(3,1,1);
+yyplot left % added for different y axis
 plot(months, RA_MonthlyAve{:,1},'LineWidth',1);
 hold on
 plot(month, RA_c_linear)
-plot(z(1,:),'LineWidth',1,'Color','y')
+ylim([0 800]) % added to force same range for both y-axes since they are both mm water.
+ylabel('Water Level (mm)') % added
+yyaxis right % added for second y-axis
+plot(z(1,:),'LineWidth',1) % removed color so it inherits color from second axis
+ylim([-400 400]) % ensure both y-axes have the same range
+ylabel('Equivalent Thickness (mm)')
 hold off
 title('Ramotswa Aquifer: August 2009 - July 2020');
-ylabel('mm')
+% ylabel('mm')
 xlabel('Year')
 legend('GLDAS - Terrestrial Water Storage','Cumulative Precipitation','GRACE - Water Equivalent Thickness');
 
