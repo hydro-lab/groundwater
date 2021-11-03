@@ -10,7 +10,6 @@ import re
 import glob
 import zipfile
 import numpy as np
-# import hyp3_sdk # do not need because images are already downloaded
 from pathlib import Path
 from osgeo import gdal
 from mintpy import view, tsview
