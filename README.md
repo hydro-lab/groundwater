@@ -1,4 +1,4 @@
 # Groundwater Resources Measurement and Management
 Sophia's thesis
-# Mozambique Coastal Saltwater Intrusion: Groundwater Changes or Flow Decreases?
+# Assessing Water Resources and Land Subsidence Using Remote Sensing 
 Gabi's thesis
