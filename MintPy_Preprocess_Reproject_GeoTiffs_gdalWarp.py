@@ -10,4 +10,7 @@ for fn in ls:
     split = fn.split(".")
     out = split[0]+"_rp.tif"
     gdal.Warp(out,fn,srcSRS='EPSG:32736',dstSRS='EPSG:4326')
+    
+    
+###Remember to lookup the EPSG code for the UTM that your image is projected to and change it in the script. 
 
