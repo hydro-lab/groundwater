@@ -9,8 +9,8 @@ ls = (glob.glob("/Volumes/hydro3-raid/TorminMineCollapse/hyp3/*/*_clip_rp.tif"))
 
 for fn in ls:
     split = fn.split(".")
-    out = split[0]+"_clip2.tif"
-    shpin = "/Volumes/hydro3-raid/Sentinel_Imagery/ASFXaiXai/sample.shp"
+    out = split[0]+"_AOI.tif"
+    shpin = "/Volumes/hydro3-raid/Sentinel_Imagery/ASFXaiXai/XaiXai_area.shp"
     gdal.Warp(out,fn, cutlineDSName = shpin, cropToCutline = True, dstNodata = np.nan)
 
 
