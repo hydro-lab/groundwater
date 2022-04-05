@@ -15,10 +15,10 @@ from pathlib import Path
 from osgeo import gdal
 from mintpy import view, tsview
 
-
+# create stack of .tif images pulled from all subfolders
 fnames = glob.glob(os.path.join('/Volumes/hydro3-raid/Sentinel_Imagery/ASFXaiXai/hype', '*/*.tif'))
 
-# determine the smallest area covered by all input files
+# determine the largest area covered by all input files
 corners = [gdal.Info(f, format='json')['cornerCoordinates'] for f in fnames]
 ulx = max(corner['upperLeft'][0] for corner in corners)
 uly = min(corner['upperLeft'][1] for corner in corners)
