@@ -33,8 +33,9 @@ slrLat <- ncvar_get(nc, attributes(nc$var)$names[2])
 ## Find reference pixel
 # Durban -29.867, 031.050
 # Xai-Xai -25.214, 033.522
-LatSearch <- -25.214
-LonSearch <- 033.522
+# Xai-Xai offshore -25.852, 34.318, out one in both directions: iLat=324, iLon=207
+LatSearch <- -25.852
+LonSearch <- 034.318
 
 for (i in (1:ncol(slrLat))) {
      if ( (LatSearch >= slrLat[1,i]) & (LatSearch <= slrLat[2,i]) ) {
@@ -109,9 +110,21 @@ out <- foreach (i = 1:(length(files)), .combine = 'rbind') %dopar% {
      
      # Extract data
      # units are meters per user guide from: https://podaac.jpl.nasa.gov/dataset/SEA_SURFACE_HEIGHT_ALT_GRIDS_L4_2SATS_5DAY_6THDEG_V_JPL2205
-     output[2] <- slrData[iLon,iLat]
-     output[3] <- slrErr[iLon,iLat]
      
+     ## average neighbors
+     test <- array(NA, dim = c(3,3))
+     error <- test
+     for (i in 1:3) {
+          for (j in 1:3) {
+               test[i,j] <- slrData[testLon[i],testLat[j]]
+          }
+     }
+     slr <- mean(test, na.rm = TRUE)
+     err <- mean(error, na.rm = TRUE)
+     
+     ## export results
+     output[2] <- slr         # SINGLE: slrData[iLon,iLat], NEIGHBORS: slr
+     output[3] <- err         # SINGLE: slrErr[iLon,iLat],  NEIGHBORS: err
      print(output) # passes to parallel rbind
 }
 
