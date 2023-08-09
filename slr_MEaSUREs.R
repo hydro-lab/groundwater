@@ -99,7 +99,7 @@ print(test)
 
 registerDoParallel(detectCores())
 out <- foreach (i = 1:(length(files)), .combine = 'rbind') %dopar% {
-     output <- array(NA, dim = 3)
+     output <- array(NA, dim = 5)
      
      nc <- ncdf4::nc_open(files[i])
      slrData <- ncvar_get(nc, attributes(nc$var)$names[4])
@@ -111,20 +111,22 @@ out <- foreach (i = 1:(length(files)), .combine = 'rbind') %dopar% {
      # Extract data
      # units are meters per user guide from: https://podaac.jpl.nasa.gov/dataset/SEA_SURFACE_HEIGHT_ALT_GRIDS_L4_2SATS_5DAY_6THDEG_V_JPL2205
      
+     ## primary pixel
+     output[2] <- slrData[iLon,iLat]
+     output[3] <- slrErr[iLon,iLat]
+     
      ## average neighbors
      test <- array(NA, dim = c(3,3))
      error <- test
      for (i in 1:3) {
           for (j in 1:3) {
                test[i,j] <- slrData[testLon[i],testLat[j]]
+               error[i,j] <- slrErr[testLon[i],testLat[j]]
           }
      }
-     slr <- mean(test, na.rm = TRUE)
-     err <- mean(error, na.rm = TRUE)
+     output[4] <- mean(test, na.rm = TRUE)
+     output[5] <- mean(error, na.rm = TRUE)
      
-     ## export results
-     output[2] <- slr         # SINGLE: slrData[iLon,iLat], NEIGHBORS: slr
-     output[3] <- err         # SINGLE: slrErr[iLon,iLat],  NEIGHBORS: err
      print(output) # passes to parallel rbind
 }
 
