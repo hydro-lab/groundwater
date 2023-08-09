@@ -132,9 +132,9 @@ out <- foreach (i = 1:(length(files)), .combine = 'rbind') %dopar% {
 
 # Label and plot data
 out <- data.frame(out) %>%
-     rename(dat = X1, slr = X2, error = X3) %>%
+     rename(dat = X1, slr_1 = X2, error_1 = X3, slr_9 = X4, error_9 = X5) %>%
      mutate(dt=as_date(dat)) %>%
-     select(dt,slr,error)
+     select(dt,slr_1,error_1,slr_9,error_9)
 ggplot(out) +
      geom_point(aes(x=dt, y=slr)) +
      xlab("Date") +
