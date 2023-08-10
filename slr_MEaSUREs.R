@@ -136,13 +136,63 @@ out <- data.frame(out) %>%
      mutate(dt=as_date(dat)) %>%
      select(dt,slr_1,error_1,slr_9,error_9)
 ggplot(out) +
-     geom_point(aes(x=dt, y=slr)) +
+     geom_point(aes(x=dt, y=slr_1), color = "black") +
+     stat_smooth(aes(x=dt, y=slr_1), method = "lm") +
      xlab("Date") +
      ylab("Sea-level Anomaly (m)") +
      theme(panel.background = element_rect(fill = "white", colour = "black")) + 
      theme(aspect.ratio = 1) +
      theme(axis.text = element_text(face = "plain", size = 14)) +
      theme(axis.title = element_text(face = "plain", size = 14))
+mod1 <- lm(slr_1~dt, data = out)
+summary(mod1)
+# Coefficients:
+#      Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) -1.033e-01  6.372e-03  -16.20   <2e-16 ***
+#      dt           9.082e-06  4.489e-07   20.23   <2e-16 ***
+#      ---
+#      Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 0.06718 on 2205 degrees of freedom
+# Multiple R-squared:  0.1565,	Adjusted R-squared:  0.1562 
+# F-statistic: 409.3 on 1 and 2205 DF,  p-value: < 2.2e-16
+ggplot(out) +
+     geom_point(aes(x=dt, y=slr_9), color = "black") +
+     stat_smooth(aes(x=dt, y=slr_9), method = "lm") +
+     xlab("Date") +
+     ylab("Sea-level Anomaly (m)") +
+     theme(panel.background = element_rect(fill = "white", colour = "black")) + 
+     theme(aspect.ratio = 1) +
+     theme(axis.text = element_text(face = "plain", size = 14)) +
+     theme(axis.title = element_text(face = "plain", size = 14))
+mod9 <- lm(slr_9~dt, data = out)
+summary(mod9)
+# Coefficients:
+#      Estimate Std. Error t value Pr(>|t|)    
+# (Intercept) -1.035e-01  6.186e-03  -16.73   <2e-16 ***
+#      dt           9.095e-06  4.358e-07   20.87   <2e-16 ***
+#      ---
+#      Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+# 
+# Residual standard error: 0.06522 on 2205 degrees of freedom
+# Multiple R-squared:  0.1649,	Adjusted R-squared:  0.1646 
+# F-statistic: 435.5 on 1 and 2205 DF,  p-value: < 2.2e-16
+confint(mod9)
+#                   2.5 %        97.5 %
+#      (Intercept)  -1.156059e-01 -9.134307e-02
+#         dt        8.240007e-06  9.949252e-06
 
 write_csv(out, "MEaSUREs_XaiXai.csv")
 
+# NOTE:
+# The statistical trend is significant and the two methods are insignificantly different.  Regardless, the trend should be reported as 
+# an increase of 9.095e-06 m/d, or
+
+365.25 * mod9$coefficients[2]
+# 0.003321813 
+8.240007e-06 * 365.25
+# 0.003009663
+9.949252e-06 * 365.25
+# 0.003633964
+
+# 3.3 mm/a (95% CI: 3.0 to 3.6 mm/a)
